@@ -149,6 +149,8 @@ def read_tiff(fname, slc=None, angle=None, mblur=None):
         angle of rotation after open the image.
     mblur : size of median filter (should be positive integer >= 3)
 
+    To-Do: consider add error handling if OpenCV is not installed.
+
     Returns
     -------
     ndarray
