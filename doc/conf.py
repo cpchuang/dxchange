@@ -16,6 +16,8 @@
 import sys
 import os
 
+import sphinx_rtd_theme
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -126,7 +128,8 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'sphinx_rtd_theme'
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # on_rtd is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -135,6 +138,14 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
     import sphinx_rtd_theme
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
+html_context = {
+    "display_github": True, # Integrate GitHub
+    "github_user": "data-exchange", # Username
+    "github_repo": "dxchange", # Repo name
+    "github_version": "master", # Version
+    "conf_py_path": "/doc/", # Path in the checkout to the docs root
+}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -301,49 +312,64 @@ texinfo_documents = [
 #ztexinfo_no_detailmenu = False
 
 # picked from http://read-the-docs.readthedocs.org/en/latest/faq.html
-class Mock(object):
+# class Mock(object):
 
-    __all__ = []
+#     __all__ = []
 
-    def __init__(self, *args, **kwargs):
-        pass
+#     def __init__(self, *args, **kwargs):
+#         pass
 
-    def __call__(self, *args, **kwargs):
-        return Mock()
+#     def __call__(self, *args, **kwargs):
+#         return Mock()
 
-    @classmethod
-    def __getattr__(cls, name):
-        return Mock()
-    def __mul__(self, other):
-        return Mock()
-    def __rmul__(self, other):
-        return Mock()
-    def __pow__(self, other):
-        return Mock()
-    def __div__(self, other):
-        return Mock()
-    def __add__(self, other):
-        return Mock()
-    def __radd__(self, other):
-        return Mock()
+#     @classmethod
+#     def __getattr__(cls, name):
+#         return Mock()
+#     def __mul__(self, other):
+#         return Mock()
+#     def __rmul__(self, other):
+#         return Mock()
+#     def __pow__(self, other):
+#         return Mock()
+#     def __div__(self, other):
+#         return Mock()
+#     def __add__(self, other):
+#         return Mock()
+#     def __radd__(self, other):
+#         return Mock()
 
-MOCK_MODULES = ['h5py',
-                'numpy',
-                'tifffile',
-                'spefile',
-                'netCDF4',
-                'EdfFile',
-                'astropy',
-                'olefile',
-                'pandas',
-                'scipy',
-                'scipy.misc',
-                # 'fnmatch',
-                # 'glob',
-                # 'collections',
-                # 'ssl',
-                # 'urllib3'
-                ]
+# MOCK_MODULES = ['h5py',
+#                 'numpy',
+#                 'tifffile',
+#                 'spefile',
+#                 'netCDF4',
+#                 'EdfFile',
+#                 'astropy',
+#                 'olefile',
+#                 'pandas',
+#                 'scipy',
+#                 'scipy.misc',
+#                 # 'fnmatch',
+#                 # 'glob',
+#                 # 'collections',
+#                 # 'ssl',
+#                 # 'urllib3'
+#                 ]
 
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = Mock()
+# for mod_name in MOCK_MODULES:
+#     sys.modules[mod_name] = Mock()
+# -- Options for Texinfo output -------------------------------------------
+# http://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autodoc_mock_imports
+
+autodoc_mock_imports = [
+    'h5py',
+    'numpy',
+    'tifffile',
+    'spefile',
+    'netCDF4',
+    'EdfFile',
+    'astropy',
+    'olefile',
+    'pandas',
+    'scipy',
+    'scipy.misc',]
