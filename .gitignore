@@ -112,6 +112,7 @@ coverage.xml
 docs/trunk/*
 .spyder*
 .idea
+.ipynb*
 
 # Francesco's #
 ################

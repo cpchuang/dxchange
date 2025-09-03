@@ -64,11 +64,12 @@ import warnings
 import functools
 import tifffile
 import scipy.misc as sm
+import cv2
 import pandas as pd
 from itertools import cycle
 from io import StringIO
 from collections import deque
-from scipy.ndimage import median_filter, rotate
+
 
 __author__ = "Doga Gursoy, Francesco De Carlo"
 __copyright__ = "Copyright (c) 2015-2016, UChicago Argonne, LLC."
@@ -139,8 +140,6 @@ def read_tiff(fname, slc=None, angle=None, mblur=None):
         angle of rotation after open the image.
     mblur : size of median filter (should be positive integer >= 3)
 
-    To-Do: consider add error handling if OpenCV is not installed.
-
     Returns
     -------
     ndarray
@@ -154,15 +153,21 @@ def read_tiff(fname, slc=None, angle=None, mblur=None):
         return False
         
     if (mblur is not None):
-        _arr = median_filter(_arr, mblur)
-        # bilateral Filter takes only u8/f32
-        #_arr = cv2.bilateralFilter(_arr.astype(np.float32), mblur, 75, 75).astype(np.uint16)
-
+	    _arr = cv2.medianBlur(_arr, mblur)
+	    # bilateral Filter takes only u8/f32
+	    #_arr = cv2.bilateralFilter(_arr.astype(np.float32), mblur, 75, 75).astype(np.uint16)
+		    
     if (angle is None) or (angle==0.0):
         arr = _slice_array(_arr, slc)
     else:
-        arr = rotate(_arr, angle, reshape=False)
-
+        scaling = 1
+        # grab the dimensions of the image and then determine the center
+        (h, w) = _arr.shape[:2]
+        (cX, cY) = (w // 2, h // 2)
+        # grab the rotation matrix
+        M = cv2.getRotationMatrix2D((cX, cY), angle, scaling)
+        # perform the actual rotation and return the image
+        arr = cv2.warpAffine(_arr, M, (w, h))
         # slice it
         arr = _slice_array(arr, slc)
 
